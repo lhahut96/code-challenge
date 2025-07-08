@@ -1,23 +1,8 @@
 import { useEffect, useState } from "react";
-import "./App.css";
-import SelectCurrency from "./components/homepage/SelectCurrency";
-import { Button } from "./components/ui/button";
-import { Input } from "./components/ui/input";
+import Home, { type CurrencyData } from "./components/homepage/Home";
 
-export interface CurrencyData {
-  currency: string;
-  price: number;
-  date: string;
-}
-
-function App() {
+const App = () => {
   const [currencyData, setCurrencyData] = useState<CurrencyData[]>([]);
-  const [sendCurrency, setSendCurrency] = useState<CurrencyData | null>(null);
-  const [receiveCurrency, setReceiveCurrency] = useState<CurrencyData | null>(
-    null
-  );
-  const [sendAmount, setSendAmount] = useState<number>(0);
-  const [receiveAmount, setReceiveAmount] = useState<number>(0);
 
   useEffect(() => {
     const fetchCurrencyData = async () => {
@@ -52,71 +37,7 @@ function App() {
 
     fetchCurrencyData();
   }, []);
-
-  const handleSendAmountChange = (amount: number) => {
-    setSendAmount(amount);
-    if (sendCurrency) {
-      const receivePrice = currencyData.find(
-        (currency) => currency.currency === receiveCurrency?.currency
-      )?.price;
-      if (receivePrice) {
-        setReceiveAmount((amount * sendCurrency.price) / receivePrice);
-      }
-    }
-  };
-
-  const handleReceiveAmountChange = (amount: number) => {
-    setReceiveAmount(amount);
-    if (receiveCurrency) {
-      const sendPrice = currencyData.find(
-        (currency) => currency.currency === sendCurrency?.currency
-      )?.price;
-      if (sendPrice) {
-        setSendAmount((amount * receiveCurrency.price) / sendPrice);
-      }
-    }
-  };
-
-  return (
-    <>
-      <h1>Swap</h1>
-      <div className='flex max-w-[80%] items-center justify-between gap-4'>
-        <label className='text-nowrap' htmlFor='sendAmount'>
-          Amount to send
-        </label>
-
-        <Input></Input>
-        <Input
-          id='sendAmount'
-          value={sendAmount}
-          onChange={(e) => handleSendAmountChange(Number(e.target.value))}
-          type='number'
-        />
-        <SelectCurrency
-          selected={sendCurrency}
-          onChange={setSendCurrency}
-          currencyData={currencyData}
-          className='w-[350px]'
-        />
-        <label className='text-nowrap' htmlFor='receiveAmount'>
-          Amount to receive
-        </label>
-        <Input
-          id='receiveAmount'
-          value={receiveAmount}
-          onChange={(e) => handleReceiveAmountChange(Number(e.target.value))}
-          type='number'
-        />
-        <SelectCurrency
-          selected={receiveCurrency}
-          onChange={setReceiveCurrency}
-          currencyData={currencyData}
-          className='w-[350px]'
-        />
-        <Button className='w-24'>Swap</Button>
-      </div>
-    </>
-  );
-}
+  return <Home currencyData={currencyData} />;
+};
 
 export default App;

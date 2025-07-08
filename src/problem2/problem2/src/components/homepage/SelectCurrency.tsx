@@ -1,5 +1,4 @@
-import { useMemo } from "react";
-import type { CurrencyData } from "../../App";
+import { memo, useCallback, useMemo } from "react";
 import {
   Select,
   SelectContent,
@@ -7,6 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import type { CurrencyData } from "./Home";
 
 interface SelectCurrencyProps {
   selected: CurrencyData | null;
@@ -26,23 +26,25 @@ const SelectCurrency = ({
       ? `https://raw.githubusercontent.com/Switcheo/token-icons/main/tokens/${selected.currency}.svg`
       : "";
   }, [selected]);
-  console.log("rerender");
+
+  const handleValueChange = useCallback(
+    (value: string) => {
+      const selectedCurrency =
+        currencyData.find((currency) => currency.currency === value) ?? null;
+      onChange(selectedCurrency);
+    },
+    [currencyData, onChange]
+  );
+
   return (
-    <Select
-      value={selected?.currency || ""}
-      onValueChange={(value) => {
-        const selectedCurrency =
-          currencyData.find((currency) => currency.currency === value) ?? null;
-        onChange(selectedCurrency);
-      }}
-    >
+    <Select value={selected?.currency || ""} onValueChange={handleValueChange}>
       <SelectTrigger className={`w-[180px] ${className}`}>
         <SelectValue placeholder='Currency' />
         {currencyLogoUrl && (
           <img
             src={currencyLogoUrl}
             alt={selected?.currency || "Currency logo"}
-            className='w-5 h-5 mr-2'
+            className='w-4 h-4 mr-2'
           />
         )}
       </SelectTrigger>
@@ -57,4 +59,4 @@ const SelectCurrency = ({
   );
 };
 
-export default SelectCurrency;
+export default memo(SelectCurrency);
