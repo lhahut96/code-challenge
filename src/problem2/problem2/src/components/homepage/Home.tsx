@@ -4,6 +4,7 @@ import { Spinner } from "../ui/spinner";
 import ConvertButton from "./ConvertButton";
 import CurrencyConverter from "./CurrencyConverter";
 import CurrencyInput from "./CurrencyInput";
+import { HomepageAlert } from "./HomepageAlert";
 import SwapButton from "./SwapButton";
 
 export interface CurrencyData {
@@ -49,7 +50,8 @@ const Home = ({ currencyData }: { currencyData: CurrencyData[] }) => {
           (item) => item.currency === receiveCurrency?.currency
         )?.price;
         if (receivePrice) {
-          setReceiveAmount((amount * sendCurrency.price) / receivePrice);
+          const calculatedAmount = (amount * sendCurrency.price) / receivePrice;
+          setReceiveAmount(Number(calculatedAmount.toFixed(2)));
         }
       }
     },
@@ -64,7 +66,8 @@ const Home = ({ currencyData }: { currencyData: CurrencyData[] }) => {
           (item) => item.currency === sendCurrency?.currency
         )?.price;
         if (sendPrice) {
-          setSendAmount((amount * receiveCurrency.price) / sendPrice);
+          const calculatedAmount = (amount * receiveCurrency.price) / sendPrice;
+          setSendAmount(Number(calculatedAmount.toFixed(2)));
         }
       }
     },
@@ -93,7 +96,9 @@ const Home = ({ currencyData }: { currencyData: CurrencyData[] }) => {
           <Spinner />
         </div>
       ) : (
-        <>
+        <div className='w-full space-y-4'>
+          <HomepageAlert />
+
           <CurrencyInput
             label='From'
             value={sendAmount}
@@ -119,7 +124,7 @@ const Home = ({ currencyData }: { currencyData: CurrencyData[] }) => {
           />
 
           <ConvertButton onClick={executeSwap} />
-        </>
+        </div>
       )}
     </CurrencyConverter>
   );

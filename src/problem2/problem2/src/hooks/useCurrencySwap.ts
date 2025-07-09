@@ -40,9 +40,9 @@ export const useCurrencySwap = ({
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       toast.success(
-        `Swap confirmed: ${sendAmount} ${
+        `Swap confirmed: ${sendAmount.toFixed(2)} ${
           sendCurrency?.currency
-        } → ${receiveAmount.toFixed(4)} ${receiveCurrency?.currency}`,
+        } → ${receiveAmount.toFixed(2)} ${receiveCurrency?.currency}`,
         {
           position: "top-center",
           duration: 4000,
