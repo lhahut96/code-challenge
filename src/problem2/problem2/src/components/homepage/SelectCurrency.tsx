@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback } from "react";
 import {
   Select,
   SelectContent,
@@ -21,12 +21,6 @@ const SelectCurrency = ({
   currencyData,
   className = "",
 }: SelectCurrencyProps) => {
-  const currencyLogoUrl = useMemo(() => {
-    return selected
-      ? `https://raw.githubusercontent.com/Switcheo/token-icons/main/tokens/${selected.currency}.svg`
-      : "";
-  }, [selected]);
-
   const handleValueChange = useCallback(
     (value: string) => {
       const selectedCurrency =
@@ -38,22 +32,32 @@ const SelectCurrency = ({
 
   return (
     <Select value={selected?.currency || ""} onValueChange={handleValueChange}>
-      <SelectTrigger className={`w-[180px] ${className}`}>
-        <SelectValue placeholder='Currency' />
-        {currencyLogoUrl && (
-          <img
-            src={currencyLogoUrl}
-            alt={selected?.currency || "Currency logo"}
-            className='w-4 h-4 mr-2'
+      <SelectTrigger
+        className={`${className} border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 rounded-md`}
+      >
+        <div className='flex items-center space-x-2'>
+          <SelectValue
+            placeholder='Select currency'
+            className='text-gray-700'
           />
-        )}
+        </div>
       </SelectTrigger>
       <SelectContent>
-        {currencyData.map((currency) => (
-          <SelectItem key={currency.currency} value={currency.currency}>
-            {currency.currency}
-          </SelectItem>
-        ))}
+        {currencyData.map((currency) => {
+          const logoUrl = `https://raw.githubusercontent.com/Switcheo/token-icons/main/tokens/${currency.currency}.svg`;
+          return (
+            <SelectItem key={currency.currency} value={currency.currency}>
+              <div className='flex items-center space-x-2'>
+                <img
+                  src={logoUrl}
+                  alt={`${currency.currency} logo`}
+                  className='w-4 h-4 rounded-full'
+                />
+                <span>{currency.currency}</span>
+              </div>
+            </SelectItem>
+          );
+        })}
       </SelectContent>
     </Select>
   );

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import SelectCurrency from "./SelectCurrency";
+import ConvertButton from "./ConvertButton";
+import CurrencyConverter from "./CurrencyConverter";
+import CurrencyInput from "./CurrencyInput";
+import SwapButton from "./SwapButton";
 
 export interface CurrencyData {
   currency: string;
@@ -67,44 +68,43 @@ const Home = ({ currencyData }: { currencyData: CurrencyData[] }) => {
     }
   }, [sendCurrency, receiveCurrency, handleSendAmountChange, sendAmount]);
 
-  return (
-    <>
-      <h1>Swap</h1>
-      <div className='flex max-w-[80%] items-center justify-between gap-4'>
-        <label className='text-nowrap' htmlFor='sendAmount'>
-          Amount to send
-        </label>
+  const swapCurrencies = () => {
+    const tempCurrency = sendCurrency;
+    const tempAmount = sendAmount;
+    setSendCurrency(receiveCurrency);
+    setReceiveCurrency(tempCurrency);
+    setSendAmount(receiveAmount);
+    setReceiveAmount(tempAmount);
+  };
 
-        <Input
-          id='sendAmount'
-          value={sendAmount}
-          onChange={(e) => handleSendAmountChange(Number(e.target.value))}
-          type='number'
-        />
-        <SelectCurrency
-          selected={sendCurrency}
-          onChange={handleSendCurrencyChange}
-          currencyData={currencyData}
-          className='w-[500px] justify-around'
-        />
-        <label className='text-nowrap' htmlFor='receiveAmount'>
-          Amount to receive
-        </label>
-        <Input
-          id='receiveAmount'
-          value={receiveAmount}
-          onChange={(e) => handleReceiveAmountChange(Number(e.target.value))}
-          type='number'
-        />
-        <SelectCurrency
-          selected={receiveCurrency}
-          onChange={handleReceiveCurrencyChange}
-          currencyData={currencyData}
-          className='w-[500px] justify-around'
-        />
-        <Button className='w-24'>Swap</Button>
-      </div>
-    </>
+  return (
+    <CurrencyConverter>
+      <CurrencyInput
+        label='From'
+        value={sendAmount}
+        onChange={handleSendAmountChange}
+        selectedCurrency={sendCurrency}
+        onCurrencyChange={handleSendCurrencyChange}
+        currencyData={currencyData}
+        placeholder='1'
+        id='sendAmount'
+      />
+
+      <SwapButton onSwap={swapCurrencies} />
+
+      <CurrencyInput
+        label='To'
+        value={receiveAmount}
+        onChange={handleReceiveAmountChange}
+        selectedCurrency={receiveCurrency}
+        onCurrencyChange={handleReceiveCurrencyChange}
+        currencyData={currencyData}
+        placeholder='0'
+        id='receiveAmount'
+      />
+
+      <ConvertButton />
+    </CurrencyConverter>
   );
 };
 
