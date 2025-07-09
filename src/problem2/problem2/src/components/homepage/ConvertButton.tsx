@@ -6,12 +6,12 @@ interface ConvertButtonProps {
 
 const ConvertButton = ({ onClick }: ConvertButtonProps) => {
   return (
-    <div className="pt-4">
+    <div className='pt-4'>
       <Button
         onClick={onClick}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
+        className='w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors'
       >
-        Convert
+        Confirm Swap
       </Button>
     </div>
   );

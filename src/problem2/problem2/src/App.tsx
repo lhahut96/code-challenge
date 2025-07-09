@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Home, { type CurrencyData } from "./components/homepage/Home";
+import { Toaster } from "./components/ui/sonner";
 
 const App = () => {
   const [currencyData, setCurrencyData] = useState<CurrencyData[]>([]);
@@ -37,7 +38,12 @@ const App = () => {
 
     fetchCurrencyData();
   }, []);
-  return <Home currencyData={currencyData} />;
+  return (
+    <>
+      <Toaster />
+      <Home currencyData={currencyData} />
+    </>
+  );
 };
 
 export default App;

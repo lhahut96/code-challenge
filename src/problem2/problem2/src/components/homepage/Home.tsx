@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
+import { useCurrencySwap } from "../../hooks/useCurrencySwap";
+import { Spinner } from "../ui/spinner";
 import ConvertButton from "./ConvertButton";
 import CurrencyConverter from "./CurrencyConverter";
 import CurrencyInput from "./CurrencyInput";
@@ -17,6 +19,13 @@ const Home = ({ currencyData }: { currencyData: CurrencyData[] }) => {
   );
   const [sendAmount, setSendAmount] = useState<number>(0);
   const [receiveAmount, setReceiveAmount] = useState<number>(0);
+
+  const { isLoading, executeSwap } = useCurrencySwap({
+    sendCurrency,
+    receiveCurrency,
+    sendAmount,
+    receiveAmount,
+  });
 
   const handleSendCurrencyChange = useCallback(
     (currency: CurrencyData | null) => {
@@ -37,7 +46,7 @@ const Home = ({ currencyData }: { currencyData: CurrencyData[] }) => {
       setSendAmount(amount);
       if (sendCurrency) {
         const receivePrice = currencyData.find(
-          (currency) => currency.currency === receiveCurrency?.currency
+          (item) => item.currency === receiveCurrency?.currency
         )?.price;
         if (receivePrice) {
           setReceiveAmount((amount * sendCurrency.price) / receivePrice);
@@ -52,7 +61,7 @@ const Home = ({ currencyData }: { currencyData: CurrencyData[] }) => {
       setReceiveAmount(amount);
       if (receiveCurrency) {
         const sendPrice = currencyData.find(
-          (currency) => currency.currency === sendCurrency?.currency
+          (item) => item.currency === sendCurrency?.currency
         )?.price;
         if (sendPrice) {
           setSendAmount((amount * receiveCurrency.price) / sendPrice);
@@ -79,31 +88,39 @@ const Home = ({ currencyData }: { currencyData: CurrencyData[] }) => {
 
   return (
     <CurrencyConverter>
-      <CurrencyInput
-        label='From'
-        value={sendAmount}
-        onChange={handleSendAmountChange}
-        selectedCurrency={sendCurrency}
-        onCurrencyChange={handleSendCurrencyChange}
-        currencyData={currencyData}
-        placeholder='1'
-        id='sendAmount'
-      />
+      {isLoading ? (
+        <div className='flex items-center justify-center'>
+          <Spinner />
+        </div>
+      ) : (
+        <>
+          <CurrencyInput
+            label='From'
+            value={sendAmount}
+            onChange={handleSendAmountChange}
+            selectedCurrency={sendCurrency}
+            onCurrencyChange={handleSendCurrencyChange}
+            currencyData={currencyData}
+            placeholder='1'
+            id='sendAmount'
+          />
 
-      <SwapButton onSwap={swapCurrencies} />
+          <SwapButton onSwap={swapCurrencies} />
 
-      <CurrencyInput
-        label='To'
-        value={receiveAmount}
-        onChange={handleReceiveAmountChange}
-        selectedCurrency={receiveCurrency}
-        onCurrencyChange={handleReceiveCurrencyChange}
-        currencyData={currencyData}
-        placeholder='0'
-        id='receiveAmount'
-      />
+          <CurrencyInput
+            label='To'
+            value={receiveAmount}
+            onChange={handleReceiveAmountChange}
+            selectedCurrency={receiveCurrency}
+            onCurrencyChange={handleReceiveCurrencyChange}
+            currencyData={currencyData}
+            placeholder='0'
+            id='receiveAmount'
+          />
 
-      <ConvertButton />
+          <ConvertButton onClick={executeSwap} />
+        </>
+      )}
     </CurrencyConverter>
   );
 };
