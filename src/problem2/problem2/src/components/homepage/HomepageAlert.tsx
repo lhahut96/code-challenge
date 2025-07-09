@@ -7,7 +7,7 @@ export function HomepageAlert() {
     <div className='flex items-center justify-center mb-4 w-fit mx-auto'>
       <Alert>
         <AlertCircleIcon />
-        <AlertTitle>
+        <AlertTitle className='text-wrap overflow-auto flex'>
           All the prices are formatted to 2 decimal points for better
           readability.
         </AlertTitle>
