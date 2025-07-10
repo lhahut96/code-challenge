@@ -30,6 +30,10 @@ const SelectCurrency = ({
     [currencyData, onChange]
   );
 
+  const getLogoUrl = useCallback((currency: string) => {
+    return `https://raw.githubusercontent.com/Switcheo/token-icons/main/tokens/${currency}.svg`;
+  }, []);
+
   return (
     <Select value={selected?.currency || ""} onValueChange={handleValueChange}>
       <SelectTrigger
@@ -44,14 +48,16 @@ const SelectCurrency = ({
       </SelectTrigger>
       <SelectContent>
         {currencyData.map((currency) => {
-          const logoUrl = `https://raw.githubusercontent.com/Switcheo/token-icons/main/tokens/${currency.currency}.svg`;
           return (
             <SelectItem key={currency.currency} value={currency.currency}>
               <div className='flex items-center space-x-2'>
                 <img
-                  src={logoUrl}
+                  src={getLogoUrl(currency.currency)}
                   alt={`${currency.currency} logo`}
                   className='w-4 h-4 rounded-full'
+                  onError={(e) => {
+                    e.currentTarget.src = getLogoUrl("USD");
+                  }}
                 />
                 <span>{currency.currency}</span>
               </div>
